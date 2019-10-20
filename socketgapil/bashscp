@@ -1,0 +1,7 @@
+for value in {1..500}
+do
+    echo "$value" | nc -w2 -N 192.168.43.118 32769
+    #echo "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.py" | nc -w1 127.0.0.1 80
+done
+
+echo All done
