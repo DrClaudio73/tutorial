@@ -1,0 +1,49 @@
+# Un esempio di Makefile
+DIRINCLUDE=./include/
+DIRSRC=./src/
+DIRSRCLIB=./src/lib/
+DIRBUILD=./build/
+
+OBJECTS_CLI=$(DIRBUILD)clientecho.o $(DIRBUILD)SigHand.o $(DIRBUILD)FullWrite.o
+OBJECTS_SRV=$(DIRBUILD)serverecho.o $(DIRBUILD)SigHand.o $(DIRBUILD)FullWrite.o
+LIBRARY=$(DIRBUILD)libSig.a
+
+PROGRAM_NAME_SERVER=serverecho
+PROGRAM_NAME_CLIENT=serverclient
+
+LIBS=-lSig
+CFLAGS=-g -Wall
+CC=gcc
+
+$(DIRBUILD)SigHand.o:
+	$(CC) $(CFLAGS) -c -o $(DIRBUILD)SigHand.o -I$(DIRINCLUDE) $(DIRSRCLIB)SigHand.c
+
+$(DIRBUILD)FullWrite.o:
+	$(CC) $(CFLAGS) -c -o $(DIRBUILD)FullWrite.o -I$(DIRINCLUDE) $(DIRSRCLIB)FullWrite.c
+
+$(DIRBUILD)clientecho.o: $(DIRSRC)TCP_echo_first.c
+	$(CC) $(CFLAGS) -c -o $(DIRBUILD)clientecho.o -I$(DIRINCLUDE) $(DIRSRC)TCP_echo_first.c
+
+$(DIRBUILD)serverecho.o: $(DIRSRC)TCP_echod_first.c
+	$(CC) $(CFLAGS) -c -o $(DIRBUILD)serverecho.o -I$(DIRINCLUDE) $(DIRSRC)TCP_echod_first.c
+
+$(DIRBUILD)libSig.a: $(DIRBUILD)SigHand.o $(DIRBUILD)FullWrite.o
+	ar r $(DIRBUILD)libSig.a $(DIRBUILD)SigHand.o $(DIRBUILD)FullWrite.o
+
+$(PROGRAM_NAME_CLIENT): $(OBJECTS) $(LIBRARY)
+	$(CC) $(CFLAGS) -o $(PROGRAM_NAME_CLIENT) $(OBJECTS) -L$(DIRBUILD) -lSig
+
+$(PROGRAM_NAME_SERVER): $(OBJECTS) $(LIBRARY)
+	$(CC) $(CFLAGS) -o $(PROGRAM_NAME_SERVER) $(OBJECTS) -L$(DIRBUILD)  -lSig
+
+#$(PROGRAM_NAME): $(OBJECTS) $(LIBRARY_NAME)
+#	$(CC) $(CFLAGS) -o $(PROGRAM_NAME) $(OBJECTS) $(LIBS)
+#	@echo " "
+#	@echo "Compilazione completata!"
+#	@echo " "
+
+all: $(PROGRAM_NAME_SERVER) $(PROGRAM_NAME_CLIENT)
+
+clean:
+	rm -f $(DIRBUILD)*.o
+	rm -f $(DIRBUILD)*.a

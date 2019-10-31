@@ -1,0 +1,45 @@
+# Un esempio di Makefile
+DIRINCLUDE=./include/
+DIRSRC=./src/
+DIRSRCLIB=./src/lib/
+DIRBUILD=./build/
+
+OBJECTS=$(DIRBUILD)clientecho.o $(DIRBUILD)serverecho.o $(DIRBUILD)SigHand.o
+SRCS = $(OBJECTS, .o=.c)
+LIBRARY_NAME=libSig.a
+
+PROGRAM_NAME_SERVER=serverecho
+PROGRAM_NAME_CLIENT=serverclient
+
+LIBS=-lSig
+CFLAGS=-g -Wall
+CC=g++
+
+#$(OBJECTS):
+#	$(CC) $(CFLAGS) -o $(PROGRAM_NAME_CLIENT) $(OBJECTS)
+
+$(OBJECTS):
+	@cd src
+	$(CC) $(CFLAGS) -c -o  $(OBJECTS) .SOURCES
+
+$(PROGRAM_NAME_CLIENT): $(OBJECTS) $(LIBRARY_NAME)
+	$(CC) $(CFLAGS) -o $(PROGRAM_NAME_CLIENT) $(OBJECTS)
+
+#$(DIRBUILD)$(OBJECTSLIB):
+#	$(CC) $(CFLAGS) -c -o $(DIRBUILD) -I$(DIRINCLUDE) $(DIRSRCLIB)*.c
+
+#$(LIBRARY_NAME): $(DIRBUILD)$(OBJECTSLIB)
+#	ar r $(LIBRARY_NAME) -L$(DIRLIB) $(DIRLIB)SigHand.o
+
+
+#$(PROGRAM_NAME): $(OBJECTS) $(LIBRARY_NAME)
+#	$(CC) $(CFLAGS) -o $(PROGRAM_NAME) $(OBJECTS) $(LIBS)
+#	@echo " "
+#	@echo "Compilazione completata!"
+#	@echo " "
+
+#all: PROGRAM_NAME_SERVER PROGRAM_NAME_CLIENT
+
+clean:
+	rm -f $(DIRBUILD)*.o
+	rm -f $(DIRBUILD)*.a
